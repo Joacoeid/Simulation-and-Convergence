@@ -15,8 +15,7 @@ class MarkovChain {
 private:
     Matrix P;
     int n;
-    random_device rd;
-    mt19937 rng = mt19937(rd());
+    mt19937 rng;
 
 public:
     //Constructor

@@ -5,6 +5,7 @@
 #ifndef SIMULATION_AND_CONVERGENCE_MATRICES_H
 #define SIMULATION_AND_CONVERGENCE_MATRICES_H
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -20,19 +21,20 @@ public:
     Matrix(vector<vector<double>> matrix);
 
     //getters
-    vector<double> getRow(int i);
-    vector<double> getColumn(int j);
-    double getValue(int i, int j);
-    int rows();
-    int columns();
+    vector<double> getRow(int i) const ;
+    vector<double> getColumn(int j) const ;
+    double getValue(int i, int j) const ;
+    int rows() const ;
+    int columns() const;
 
     //setters
     void setRow(vector<double> row, int i);
     void setColumn(vector<double> column, int j);
 
     //methods
-    void checkProbs(Matrix M);
+    void checkProbs(const vector<vector<double>> &mat);
 };
 
+std::ostream& operator<<(std::ostream& out, const Matrix& M);
 
 #endif //SIMULATION_AND_CONVERGENCE_MATRICES_H
