@@ -31,12 +31,33 @@ void TestsForErgodicTheorem(MarkovChain& chain) {
     cout << "for steps = 1000000: " << Re6 << endl;
 }
 
+void TestForTotalVariation(MarkovChain& chain) {
+    auto tv = chain.runningTotalVariation(0, 100000);
+
+    cout << "TV at 10: " << tv[10] << endl;
+    cout << "TV at 100:  " << tv[100] << endl;
+    cout << "TV at 1000:  " << tv[1000] << endl;
+    cout << "TV at 100000:  " << tv[100000] << endl;
+}
+
 int main() {
     vector<vector<double>> matrix = {{0.5, 0.3, 0.2}, {0.1, 0.6, 0.3}, {0.2, 0.3, 0.5}};
     Matrix M = Matrix(matrix, false);
     MarkovChain chain(M);
 
+    auto pi = M.stationaryDistribution();
+
     cout << "Tests made for M = \n" << M << endl;
+
+    cout << "Theoretical pi: ";
+    for(double x : pi) cout << x << " ";
+    cout << endl;
+
+    double sum = 0;
+    for(double x : pi) sum += x;
+    cout << "Sum of pi: " << sum << endl;
+
     TestsForErgodicTheorem(chain);
+    TestForTotalVariation(chain);
     return 0;
 }

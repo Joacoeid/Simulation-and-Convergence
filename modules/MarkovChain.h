@@ -29,6 +29,7 @@ public:
     int nextState(int currentState);
     vector<int> simulate(int startState, int steps);
     vector<double> empiricalDistribution(int startState, int steps);
+    vector<double> runningTotalVariation(int startState, int steps);
 };
 
 

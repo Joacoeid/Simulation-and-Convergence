@@ -85,7 +85,7 @@ vector<double> Matrix::GaussianElimination(vector<vector<double>> A, vector<doub
     for (int col = 0; col < n; col++) {
         //find pivot
         int pivot = col;
-        for (int row = 0; row < n; row++) {
+        for (int row = col; row < n; row++) {
             if (abs(A[row][col]) > abs(A[pivot][col])) {
                 pivot = row;
             }
@@ -121,10 +121,11 @@ vector<double> Matrix::stationaryDistribution() {
     int n = rows();
 
     // Construction of P^T - I
+    Matrix PT = this->transpose();
     vector<vector<double>> A(n, vector<double>(n));
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-            A[i][j] = matrix[i][j] - (i == j ? 1 : 0);
+            A[i][j] = PT.getValue(i,j) - (i == j ? 1.0 : 0.0);
         }
     }
 
@@ -138,7 +139,16 @@ vector<double> Matrix::stationaryDistribution() {
     b[n-1] = 1.0;
 
     //Gaussian elimination
-    return GaussianElimination(A, b);
+    vector<double> pi = GaussianElimination(A, b);
+
+    // Normalize (extra safety against numerical drift)
+    double sum = 0.0;
+    for (double x : pi) sum += x;
+
+    for (double& x : pi)
+        x /= sum;
+
+    return pi;
 }
 
 Matrix Matrix::inverse() {

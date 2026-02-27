@@ -73,4 +73,36 @@ vector<double> MarkovChain::empiricalDistribution(int startState, int steps) {
     return empirical;
 }
 
+vector<double> MarkovChain::runningTotalVariation(int startState, int steps) {
+
+    vector<int> trajectory = simulate(startState, steps);
+    vector<double> theoretical = P.stationaryDistribution();
+
+    vector<double> tvDistances;
+    vector<int> counts(n, 0);
+
+    // Progressive empirical distribution
+    for (size_t t = 0; t < trajectory.size(); ++t) {
+
+        int state = trajectory[t];
+        counts[state]++;
+
+        // Compute empirical distribution at time t
+        vector<double> empirical(n, 0.0);
+        for (int i = 0; i < n; ++i) {
+            empirical[i] = static_cast<double>(counts[i]) / (t + 1);
+        }
+
+        // Compute total variation distance
+        double sum = 0.0;
+        for (int i = 0; i < n; ++i) {
+            sum += std::abs(empirical[i] - theoretical[i]);
+        }
+
+        tvDistances.push_back(0.5 * sum);
+    }
+
+    return tvDistances;
+}
+
 
