@@ -18,7 +18,7 @@ private:
 public:
     //constructors
     Matrix();
-    Matrix(vector<vector<double>> matrix);
+    Matrix(vector<vector<double>> matrix, bool SkipCheck);
 
     //getters
     vector<double> getRow(int i) const ;
@@ -33,6 +33,10 @@ public:
 
     //methods
     void checkProbs(const vector<vector<double>> &mat);
+    Matrix transpose();
+    static vector<double> GaussianElimination(vector<vector<double>> A, vector<double> b);
+    vector<double> stationaryDistribution();
+    Matrix inverse();
 };
 
 std::ostream& operator<<(std::ostream& out, const Matrix& M);
