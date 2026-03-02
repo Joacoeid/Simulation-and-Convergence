@@ -12,6 +12,10 @@ Matrix::Matrix(vector<vector<double>> Matrix, bool SkipCheck) {
     if (!SkipCheck) checkProbs(Matrix);
 }
 
+vector<vector<double>> Matrix::getMatrix() const {
+    return matrix;
+}
+
 vector<double> Matrix::getRow(int i) const {
     return matrix[i];
 }
@@ -174,4 +178,87 @@ std::ostream& operator<<(std::ostream& out, const Matrix& M) {
         out << "\n";
     }
     return out;
+}
+
+Matrix Matrix::operator*(Matrix B) {
+    int n = matrix.size();
+    vector<vector<double>> C(n, vector<double>(n, 0.0));
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            for (int k = 0; k < n; k++) {
+                C[i][j] += matrix[i][k] * B.getValue(k,j);
+            }
+        }
+    }
+
+    return Matrix(C, true);
+}
+
+pair<Matrix, Matrix> Matrix::qrDecomposition(vector<vector<double> > A) {
+    int n = A.size();
+    vector<vector<double>> Q(n, vector<double>(n, 0.0));
+    vector<vector<double>> R(n, vector<double>(n, 0.0));
+
+    for (int j = 0; j < n; j++) {
+        vector<double> v(n);
+        for (int i = 0; i < n; i++) {
+            v[i] = A[i][j];
+        }
+
+        for (int k = 0; k < n; k++) {
+            double dot = 0.0;
+            for (int i = 0; i < n; i++) {
+                dot += Q[i][k] * A[i][j];
+            }
+            R[k][j] = dot;
+            for (int i = 0; i < n; i++) {
+                v[i] -= dot * Q[i][k];
+            }
+        }
+
+        double norm = 0.0;
+        for (int i = 0; i < n; i++) {
+            norm += v[i] * v[i];
+        }
+        norm = sqrt(norm);
+
+        if (norm < 1e-12) {
+            throw std::logic_error("Matrix is singular, QR decomposiion failed");
+        }
+
+        R[j][j] = norm;
+        for (int i = 0; i < n; i++) {
+            Q[i][j] = v[i]/norm;
+        }
+    }
+
+    return {Matrix(Q, true), Matrix(R, true)};
+}
+
+vector<double> Matrix::eigenvalues() {
+    int n = rows();
+    vector<vector<double>> A = matrix;
+
+    for (int iter = 0; iter < 1000; iter++) {
+        auto [Q, R] = qrDecomposition(A);
+        A = (Q*R).getMatrix();
+
+        double offDiag = 0.0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                offDiag += abs(A[i][j]);
+            }
+        }
+        if (offDiag < 1e-10) {
+            break;
+        }
+    }
+
+    vector<double> eigvals(n);
+    for (int i = 0; i < n; i++) {
+        eigvals[i] = A[i][i];
+    }
+
+    return eigvals;
 }

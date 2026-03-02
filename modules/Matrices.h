@@ -23,6 +23,7 @@ public:
     //getters
     vector<double> getRow(int i) const ;
     vector<double> getColumn(int j) const ;
+    vector<vector<double>> getMatrix() const;
     double getValue(int i, int j) const ;
     int rows() const ;
     int columns() const;
@@ -32,13 +33,18 @@ public:
     void setColumn(vector<double> column, int j);
 
     //methods
+    Matrix operator *(Matrix B);
+
     void checkProbs(const vector<vector<double>> &mat);
     Matrix transpose();
     static vector<double> GaussianElimination(vector<vector<double>> A, vector<double> b);
     vector<double> stationaryDistribution();
     Matrix inverse();
+    static pair<Matrix, Matrix> qrDecomposition(vector<vector<double>> A);
+    vector<double> eigenvalues();
 };
 
 std::ostream& operator<<(std::ostream& out, const Matrix& M);
+
 
 #endif //SIMULATION_AND_CONVERGENCE_MATRICES_H
