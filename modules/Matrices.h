@@ -40,8 +40,10 @@ public:
     static vector<double> GaussianElimination(vector<vector<double>> A, vector<double> b);
     vector<double> stationaryDistribution();
     Matrix inverse();
+    double determinant();
     static pair<Matrix, Matrix> qrDecomposition(vector<vector<double>> A);
     vector<double> eigenvalues();
+    double SpectralGap();
 };
 
 std::ostream& operator<<(std::ostream& out, const Matrix& M);

@@ -180,17 +180,24 @@ std::ostream& operator<<(std::ostream& out, const Matrix& M) {
     return out;
 }
 
-Matrix Matrix::operator*(Matrix B) {
-    int n = matrix.size();
-    vector<vector<double>> C(n, vector<double>(n, 0.0));
+double Matrix::determinant() {
+    vector<double> eigvals = eigenvalues();
+    double det = 1.0;
+    for (double e : eigvals)
+        det *= e;
+    return det;
+}
 
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            for (int k = 0; k < n; k++) {
-                C[i][j] += matrix[i][k] * B.getValue(k,j);
-            }
-        }
-    }
+Matrix Matrix::operator*(Matrix B) {
+    int m = rows();
+    int inner = columns();
+    int p = B.columns();
+    vector<vector<double>> C(m, vector<double>(p, 0.0));
+
+    for (int i = 0; i < m; i++)
+        for (int j = 0; j < p; j++)
+            for (int k = 0; k < inner; k++)
+                C[i][j] += matrix[i][k] * B.getValue(k, j);
 
     return Matrix(C, true);
 }
@@ -240,25 +247,44 @@ vector<double> Matrix::eigenvalues() {
     int n = rows();
     vector<vector<double>> A = matrix;
 
-    for (int iter = 0; iter < 1000; iter++) {
+    for (int iter = 0; iter < 10000; iter++) {
+        // Wilkinson shift: use bottom-right element as shift
+        double shift = A[n-1][n-1];
+
+        // Subtract shift from diagonal
+        for (int i = 0; i < n; i++)
+            A[i][i] -= shift;
+
         auto [Q, R] = qrDecomposition(A);
-        A = (Q*R).getMatrix();
+        A = (R * Q).getMatrix();
+
+        // Add shift back
+        for (int i = 0; i < n; i++)
+            A[i][i] += shift;
 
         double offDiag = 0.0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
+        for (int i = 1; i < n; i++)
+            for (int j = 0; j < i; j++)
                 offDiag += abs(A[i][j]);
-            }
-        }
-        if (offDiag < 1e-10) {
+        if (offDiag < 1e-12)
             break;
-        }
     }
 
     vector<double> eigvals(n);
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
         eigvals[i] = A[i][i];
+    return eigvals;
+}
+
+double Matrix::SpectralGap() {
+    vector<double> eigenVals = eigenvalues();
+
+    double secondLargest = -1.0;
+    for (double e : eigenVals) {
+        if (abs(e - 1.0) > 1e-10) {
+            secondLargest = max(secondLargest, abs(e));
+        }
     }
 
-    return eigvals;
+    return 1.0 - secondLargest;
 }

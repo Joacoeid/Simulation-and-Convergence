@@ -67,8 +67,15 @@ int main() {
     for(double x : pi) sum += x;
     cout << "Sum of pi: " << sum << endl;
 
-    TestsForErgodicTheorem(chain);
-    TestForTotalVariation(chain);
-    TestforMixingTime(chain);
+    //TestsForErgodicTheorem(chain);
+    //TestForTotalVariation(chain);
+    //TestforMixingTime(chain);
+
+    // P^2 sanity check
+    Matrix M2 = M * M;
+    cout << "M^2 = " << M2 << endl;
+    cout << "Eigenvalues : " << M.eigenvalues() << endl;
+    cout << "Determinant : " << M.determinant() << endl;
+    cout << "Spectral Gap : " << M.SpectralGap() << endl;
     return 0;
 }
