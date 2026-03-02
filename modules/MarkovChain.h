@@ -30,6 +30,7 @@ public:
     vector<int> simulate(int startState, int steps);
     vector<double> empiricalDistribution(int startState, int steps);
     vector<double> runningTotalVariation(int startState, int steps);
+    int mixingTime(double epsilon);
 };
 
 

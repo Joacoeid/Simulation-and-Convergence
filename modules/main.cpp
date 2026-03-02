@@ -40,6 +40,16 @@ void TestForTotalVariation(MarkovChain& chain) {
     cout << "TV at 100000:  " << tv[100000] << endl;
 }
 
+void TestforMixingTime(MarkovChain& chain) {
+    int M1 = chain.mixingTime(0.1);
+    int M2 = chain.mixingTime(0.01);
+    int M3 = chain.mixingTime(0.001);
+
+    cout << "Mixing time for eps = 0.1: " << M1 << endl;
+    cout << "Mixing time for eps = 0.01: " << M2 << endl;
+    cout << "Mixing time for eps = 0.001: " << M3 << endl;
+}
+
 int main() {
     vector<vector<double>> matrix = {{0.5, 0.3, 0.2}, {0.1, 0.6, 0.3}, {0.2, 0.3, 0.5}};
     Matrix M = Matrix(matrix, false);
@@ -59,5 +69,6 @@ int main() {
 
     TestsForErgodicTheorem(chain);
     TestForTotalVariation(chain);
+    TestforMixingTime(chain);
     return 0;
 }

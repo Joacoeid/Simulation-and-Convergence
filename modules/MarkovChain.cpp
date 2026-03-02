@@ -40,11 +40,13 @@ vector<int> MarkovChain::simulate(int startState, int steps) {
     vector<int> Trajectory;
     int curentState = startState;
     Trajectory.push_back(curentState);
+
     while (steps > 0) {
         curentState = nextState(curentState);
         Trajectory.push_back(curentState);
         steps--;
     }
+
     return Trajectory;
 }
 
@@ -103,6 +105,22 @@ vector<double> MarkovChain::runningTotalVariation(int startState, int steps) {
     }
 
     return tvDistances;
+}
+
+int MarkovChain::mixingTime(double epsilon) {
+
+    //sufficiently long trajectory
+    int maxSteps = 1000000;
+    vector<double> tv = runningTotalVariation(0, maxSteps);
+
+    for (int t = 0; t < tv.size(); ++t) {
+        if (tv[t] < epsilon) {
+            return t;
+        }
+    }
+
+    // If epsilon not reached within maxSteps
+    return -1;
 }
 
 
