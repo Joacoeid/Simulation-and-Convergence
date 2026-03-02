@@ -50,8 +50,7 @@ void TestforMixingTime(MarkovChain& chain) {
     cout << "Mixing time for eps = 0.001: " << M3 << endl;
 }
 
-int main() {
-    vector<vector<double>> matrix = {{0.5, 0.3, 0.2}, {0.1, 0.6, 0.3}, {0.2, 0.3, 0.5}};
+void Tests(vector<vector<double>> matrix) {
     Matrix M = Matrix(matrix, false);
     MarkovChain chain(M);
 
@@ -67,15 +66,19 @@ int main() {
     for(double x : pi) sum += x;
     cout << "Sum of pi: " << sum << endl;
 
-    //TestsForErgodicTheorem(chain);
-    //TestForTotalVariation(chain);
-    //TestforMixingTime(chain);
+    TestsForErgodicTheorem(chain);
+    TestForTotalVariation(chain);
+    TestforMixingTime(chain);
 
-    // P^2 sanity check
-    Matrix M2 = M * M;
-    cout << "M^2 = " << M2 << endl;
     cout << "Eigenvalues : " << M.eigenvalues() << endl;
-    cout << "Determinant : " << M.determinant() << endl;
     cout << "Spectral Gap : " << M.SpectralGap() << endl;
+}
+
+int main() {
+    vector<vector<double>> matrix = {{0.5, 0.3, 0.2}, {0.1, 0.6, 0.3}, {0.2, 0.3, 0.5}};
+    vector<vector<double>> P = {{0.99, 0.01},{0.01, 0.99}};
+
+    Tests(P);
+
     return 0;
 }
